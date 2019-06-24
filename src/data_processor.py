@@ -5,10 +5,9 @@ from collections import defaultdict
 from itertools import groupby
 from chainer import cuda
 from create_composition import load_codecs, load_codecs_skip_ngram, load_pos_to_subwordlist
-from create_composition import create_composition_ngram, create_composition_skip_ngram
-from create_composition import create_composition_ngram_with_hash, create_composition_bpe_with_hash
+from create_composition import create_composition_skip_ngram, create_composition_ngram_with_hash
+# from create_composition import create_composition_skip_ngram, create_composition_ngram_with_hash, create_composition_bpe_with_hash, create_composition_skip_ngram
 from create_composition import hash
-# from create_composition_bpe import load_bpe_codecs, create_composition_bottom_up_with_hash
 from utils import get_total_line
 
 class DataProcessor(object):
@@ -27,13 +26,6 @@ class DataProcessor(object):
             self.ngram_dic = self.create_ngram_dic()
         else:
             self.ngram_dic = None
-
-        if self.args.subword_type == 2:
-            self.pos_to_subwordlist = load_pos_to_subwordlist(args.pos_to_subword_path)
-            if self.args.test_word_file_path != "":
-                self.test_words_pos_to_subwordlist = load_pos_to_subwordlist(args.test_words_pos_to_subword_path)
-        if self.args.subword_type == 3:
-            self.bpe_merge_dic = load_bpe_codecs(args.bpe_codecs_path)
         self.set_n_vocab_subword()
         self.set_maxlen()
         self.filtering_words = self.load_filtering_words(args.filtering_words_path)
@@ -62,17 +54,9 @@ class DataProcessor(object):
 
     def create_ngram_dic(self):
         if self.args.subword_type == 0 or self.args.subword_type == 4:
+            # TODO: use appropriate number
             return load_codecs(self.args.codecs_path, self.args.limit_size,\
                                self.args.unique_false, self.args.codecs_type)
-        elif self.args.subword_type == 1:
-            return load_codecs_skip_ngram(self.args.codecs_path, self.args.limit_size,\
-                                          self.args.unique_false, self.args.codecs_type, self.args.test)
-        elif self.args.subword_type == 2:
-            print('not implemented')
-            exit()
-        elif self.args.subword_type == 3:
-            print('not implemented')
-            exit()
         else:
             print('error')
             exit()
@@ -91,19 +75,10 @@ class DataProcessor(object):
         print('n_vocab_subword = ', self.n_vocab_subword, flush=True)
 
     def set_maxlen(self):
-        # 
-        # TODO: investigate appropriate maxlen
-        # 
         if self.args.maxlen != -1:
             self.maxlen = self.args.maxlen
         elif self.args.subword_type == 0 or self.args.subword_type == 4:
             self.maxlen = 135
-        elif self.args.subword_type == 1:
-            self.maxlen = 500
-        elif self.args.subword_type == 2:
-            self.maxlen = 150
-        elif self.args.subword_type == 3:
-            self.maxlen = 150
         else:
             print('error')
             exit()
@@ -118,7 +93,6 @@ class DataProcessor(object):
                 word = line.strip()
                 words.add(word)
             print('loading filtering words ... done', flush=True)
-
             return words
 
     def prepare_dataset(self):
@@ -229,27 +203,25 @@ class DataProcessor(object):
         print('create subword frequency dictionary ... done', flush=True)
 
     def get_subword_idx(self, word, pos, limit_false=True, unk=False):
-        # index_only = False if self.args.network_type == 3 else True
+        
+        '''
+        methods subword_type hashed_idx
+        --------------------------------
+        SUM-F          0        False
+        SUM-H          0        True 
+        KVQ-H          0        True 
+        SUM-FH         4        True 
+        KVQ-FH         4        True 
+        '''
+
         index_only = False if self.separate_kvq else True
         if self.args.hashed_idx:
             if self.args.subword_type == 0:
-            # subword_idx = create_composition_ngram_with_hash(word, index_only=True, bucket_size=self.bucket_size)
-                subword_idx = create_composition_ngram_with_hash(word, self.args.n_max, self.args.n_min, index_only=index_only, multi_hash=self.multi_hash)
-            elif self.args.subword_type == 1:
-                # skip n-gram
-                print('not implemented')
-                exit()
-            elif self.args.subword_type == 2:
-                # TODO: add multi hash
-                subword_idx_ngram = create_composition_ngram_with_hash(word, self.args.n_max, self.args.n_min, index_only=index_only)
-                pos_to_subwordlist = self.pos_to_subwordlist if not unk else self.test_words_pos_to_subwordlist
-                subword_idx_bpe = create_composition_bpe_with_hash(word, pos_to_subwordlist, pos, index_only=index_only)
-                subword_idx = subword_idx_ngram + subword_idx_bpe
-            elif self.args.subword_type == 3:
-                subword_idx = create_composition_bottom_up_with_hash(word, self.bpe_merge_dic, index_only=index_only)
-            elif self.args.subword_type == 4:
-            # subword_idx = create_composition_ngram_with_hash(word, index_only=True, bucket_size=self.bucket_size)
-                subword_idx = create_composition_ngram_with_hash(word, self.args.n_max, self.args.n_min, index_only=index_only, multi_hash=self.multi_hash, ngram_dic=self.ngram_dic)
+                subword_idx = create_composition_ngram_with_hash(word, self.args.n_max, self.args.n_min,\
+                                                             index_only=index_only, multi_hash=self.multi_hash)
+            elif self.args.subword_type == 4: # TODO: use appropriate number
+                subword_idx = create_composition_ngram_with_hash(word, self.args.n_max, self.args.n_min,\
+                                   index_only=index_only, multi_hash=self.multi_hash, ngram_dic=self.ngram_dic)
             else:
                 print('error')
                 exit()
@@ -257,15 +229,6 @@ class DataProcessor(object):
             if self.args.subword_type == 0:
                 subword_idx = create_composition_ngram(word, self.ngram_dic, self.args.n_max,\
                                                        self.args.n_min, self.limit_size, index_only=index_only)
-            elif self.args.subword_type == 1:
-                subword_idx = create_composition_skip_ngram(word, self.ngram_dic, index_only=True,\
-                                                            limit_size=self.limit_size, ngram_dic_pos=pos-1)
-            elif self.args.subword_type == 2:
-                print('not implemented')
-                exit()
-            elif self.args.subword_type == 3:
-                print('not implemented')
-                exit()
             else:
                 print('error')
                 exit()

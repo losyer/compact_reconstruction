@@ -1,6 +1,5 @@
 # coding: utf-8
 import json, sys, argparse, os 
-from pytz import timezone
 from datetime import datetime
 HOME = os.getenv("HOME")
 os.environ["CHAINER_SEED"] = "1"
@@ -17,7 +16,6 @@ random.seed(0)
 np.random.seed(0)
 chainer.config.cudnn_deterministic = True
 
-# from net import Network, Network_cnn
 from net import Network, Network_sum, Network_cnn_new, Network_sep_kvq
 from data_processor import DataProcessor
 from utils import Args, set_settings, load_settings
@@ -42,25 +40,15 @@ def set_result_dest(args):
 
 def initial_setup(args):
     # setup result directory
-    # for _ in range(100):
     result_dest = set_result_dest(args)
     result_abs_dest = os.path.abspath(result_dest)
-        # try:
     os.makedirs(result_dest)
-    print(result_dest)
-            # break
-        # except:
-        #     print('Directry name conflict: sleep 3 sec.', flush=True)
-        #     from time import sleep
-        #     sleep(3)
-        #     start_time = datetime.now().strftime('%Y%m%d_%H_%M_%S')
+    print("result dest: "+result_dest)
 
+    # dump setting file
     with open(os.path.join(result_abs_dest, "settings.json"), "w") as fo:
         fo.write(json.dumps(vars(args), sort_keys=True, indent=4))
     print(json.dumps(vars(args), sort_keys=True, indent=4), flush=True)
-    # with open('/home/sasaki/sasaki_work/subword_vector/ngram_sq_kvq/jobid-to-savepath/'+args.job_id, "w") as fo:
-    #     fo.write(result_dest+'/')
-    print("result dest: "+result_dest)
     
     return result_dest
 
@@ -74,7 +62,7 @@ def model_setup(args, n_vocab_subword):
     elif args.network_type == 3:
         nn = Network_sep_kvq(args, n_vocab_subword)
     else:
-        prin('error')
+        print('error')
         exit()
     if args.load_embedding:
         nn.load_embeddings(args, vocab_subword)
@@ -142,7 +130,6 @@ def main(args):
     else:
         trainer.extend(extensions.snapshot(filename='model_epoch_{.updater.epoch}'),
                       trigger=(args.snapshot_interval, 'epoch'))
-
     trainer.run()
 
 if __name__ == '__main__':
@@ -175,7 +162,7 @@ if __name__ == '__main__':
     parser.add_argument('--z_type', type=int, default=0, help='')
 
     # other flag or id
-    parser.add_argument('--job_id', type=str, default='-1', help='')
+    # parser.add_argument('--job_id', type=str, default='-1', help='')
     parser.add_argument('--skip_create_dataset', action='store_true', help='')
 
     # model parameter
