@@ -8,7 +8,7 @@ from create_composition import load_codecs, load_codecs_skip_ngram, load_pos_to_
 from create_composition import create_composition_ngram, create_composition_skip_ngram
 from create_composition import create_composition_ngram_with_hash, create_composition_bpe_with_hash
 from create_composition import hash
-from create_composition_bpe import load_bpe_codecs, create_composition_bottom_up_with_hash
+# from create_composition_bpe import load_bpe_codecs, create_composition_bottom_up_with_hash
 from utils import get_total_line
 
 class DataProcessor(object):
