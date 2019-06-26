@@ -15,6 +15,8 @@
 - datetime
 
 ### How to train
+
+#### command exmaple
 ```
 $ src/train.py --gpu 0 \
 --ref_vec_path crawl-300d-2M-subword.vec \
