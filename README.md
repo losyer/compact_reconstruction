@@ -5,7 +5,7 @@
   - [Usage](#usage)
     - [Requirements](#requirements)
     - [How to train](#how-to-train)
-    - [How to estimate (OOV) word vectors](#how-to-estimate-(oov)-word-vectors)    
+    - [How to estimate (OOV) word vectors](#how-to-estimate-oov-word-vectors)    
   - [Resources](#resources)
 
 
