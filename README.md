@@ -18,7 +18,6 @@
 
 ### How to train
 
-#### command exmaple
 ```
 $ src/train.py --gpu 0 \
 --ref_vec_path crawl-300d-2M-subword.vec \
@@ -36,7 +35,6 @@ $ src/train.py --gpu 0 \
 ```
 
 ### How to estimate (OOV) word vectors
-#### command exmaple
 For reconstructing original word embeddings:
 ```
 $ python src/save_embedding.py \
