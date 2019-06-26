@@ -23,7 +23,7 @@ $ src/train.py --gpu 0 \
 --freq_path freq_count.crawl-300d-2M-subword.vec \
 --multi_hash two \
 --maxlen 200 \
---codecs_path ngram_dic.crawl-subword.max30.min3.new \
+--codecs_path ngram_dic.crawl-subword.max30.min3 \
 --network_type 2 \
 --subword_type 4 \
 --limit_size 1000000 \
