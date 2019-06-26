@@ -36,6 +36,18 @@ $ src/train.py --gpu 0 \
 ```
 
 ### How to estimate (OOV) word vectors
+#### command exmaple
+```
+For reconstructing original word embeddings:
+$ python src/save_embedding.py \
+--gpu 0 \
+--inference \
+--model_path result/sum/20190625_00_57_18/model_epoch_300
+
+For estimating OOV word embeddings:
+$ 
+```
+
 
 ## Resources
 - Subword embeddings
