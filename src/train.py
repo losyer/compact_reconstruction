@@ -62,7 +62,7 @@ def model_setup(args, n_vocab_subword):
     elif args.network_type == 3:
         nn = Network_sep_kvq(args, n_vocab_subword)
     else:
-        print('error')
+        print('error 1')
         exit()
     if args.load_embedding:
         nn.load_embeddings(args, vocab_subword)
@@ -104,7 +104,7 @@ def main(args):
 
     model_path = '/'.join(args.model_path.split('/')[0:-1])+'/'
     model_epoch = args.model_path.split('/')[-1].split('_')[-1]
-    print('model path = ',model_path)
+    print('model path = ', model_path)
 
     if args.load_snapshot:
         print("loading snapshot...")
@@ -162,7 +162,6 @@ if __name__ == '__main__':
     parser.add_argument('--z_type', type=int, default=0, help='')
 
     # other flag or id
-    # parser.add_argument('--job_id', type=str, default='-1', help='')
     parser.add_argument('--skip_create_dataset', action='store_true', help='')
 
     # model parameter
@@ -182,10 +181,7 @@ if __name__ == '__main__':
     parser.add_argument('--pretrained_subword_vector', type=str)
     parser.add_argument('--filtering_words_path', type=str, default="")
     parser.add_argument('--freq_path', type=str, default="")
-    parser.add_argument('--pos_to_subword_path', type=str, default="")
-    parser.add_argument('--bpe_codecs_path', type=str, default="")
     parser.add_argument('--test_word_file_path', type=str, default="")
-    parser.add_argument('--test_words_pos_to_subword_path', type=str, default="")
     
     args = parser.parse_args()
     main(args)
