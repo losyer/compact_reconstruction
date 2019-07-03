@@ -4,11 +4,10 @@ import numpy as np
 from collections import defaultdict
 from itertools import groupby
 from chainer import cuda
-from create_composition import load_codecs, load_codecs_skip_ngram, load_pos_to_subwordlist
-from create_composition import create_composition_ngram, create_composition_skip_ngram
-from create_composition import create_composition_ngram_with_hash, create_composition_bpe_with_hash
+from create_composition import load_codecs, create_composition_ngram, create_composition_ngram_with_hash
+# from create_composition import load_codecs, load_codecs_skip_ngram, load_pos_to_subwordlist
+# from create_composition import create_composition_ngram, create_composition_ngram_with_hash, create_composition_bpe_with_hash, create_composition_skip_ngram
 from create_composition import hash
-from create_composition_bpe import load_bpe_codecs, create_composition_bottom_up_with_hash
 from utils import get_total_line
 
 class DataProcessor(object):
@@ -21,19 +20,9 @@ class DataProcessor(object):
         if self.args.freq_path != "":
             self.create_word_to_freq_dic()
         if args.codecs_path != '':
-            if args.unique_false:
-                print('error')
-                exit()
             self.ngram_dic = self.create_ngram_dic()
         else:
             self.ngram_dic = None
-
-        if self.args.subword_type == 2:
-            self.pos_to_subwordlist = load_pos_to_subwordlist(args.pos_to_subword_path)
-            if self.args.test_word_file_path != "":
-                self.test_words_pos_to_subwordlist = load_pos_to_subwordlist(args.test_words_pos_to_subword_path)
-        if self.args.subword_type == 3:
-            self.bpe_merge_dic = load_bpe_codecs(args.bpe_codecs_path)
         self.set_n_vocab_subword()
         self.set_maxlen()
         self.filtering_words = self.load_filtering_words(args.filtering_words_path)
@@ -62,19 +51,11 @@ class DataProcessor(object):
 
     def create_ngram_dic(self):
         if self.args.subword_type == 0 or self.args.subword_type == 4:
+            # TODO: use appropriate number
             return load_codecs(self.args.codecs_path, self.args.limit_size,\
                                self.args.unique_false, self.args.codecs_type)
-        elif self.args.subword_type == 1:
-            return load_codecs_skip_ngram(self.args.codecs_path, self.args.limit_size,\
-                                          self.args.unique_false, self.args.codecs_type, self.args.test)
-        elif self.args.subword_type == 2:
-            print('not implemented')
-            exit()
-        elif self.args.subword_type == 3:
-            print('not implemented')
-            exit()
         else:
-            print('error')
+            print('error 2')
             exit()
 
     def set_n_vocab_subword(self):
@@ -86,26 +67,17 @@ class DataProcessor(object):
             else:
                 self.n_vocab_subword = self.limit_size
         else:
-            print('error')
+            print('error 3')
             exit()
         print('n_vocab_subword = ', self.n_vocab_subword, flush=True)
 
     def set_maxlen(self):
-        # 
-        # TODO: investigate appropriate maxlen
-        # 
         if self.args.maxlen != -1:
             self.maxlen = self.args.maxlen
         elif self.args.subword_type == 0 or self.args.subword_type == 4:
             self.maxlen = 135
-        elif self.args.subword_type == 1:
-            self.maxlen = 500
-        elif self.args.subword_type == 2:
-            self.maxlen = 150
-        elif self.args.subword_type == 3:
-            self.maxlen = 150
         else:
-            print('error')
+            print('error 4')
             exit()
 
     def load_filtering_words(self, path):
@@ -118,7 +90,6 @@ class DataProcessor(object):
                 word = line.strip()
                 words.add(word)
             print('loading filtering words ... done', flush=True)
-
             return words
 
     def prepare_dataset(self):
@@ -132,9 +103,8 @@ class DataProcessor(object):
 
     def load_dataset(self):
         dataset = []
-
         self.total_line = get_total_line(path=self.ref_vec_path, test=self.test)
-        self.create_freq_dic()
+        # self.create_freq_dic()
 
         print("create dataset ...", flush=True)
         with codecs.open(self.ref_vec_path, "r", 'utf-8', errors='replace') as input_data:
@@ -185,113 +155,50 @@ class DataProcessor(object):
         print('len(dataset) =', len(dataset), flush=True)
         return dataset
 
-    def create_freq_dic(self, save_freq_dic=False):
-
-        if self.total_line == None:
-            self.total_line = get_total_line(path=self.ref_vec_path, test=self.test)
-
-        print('create subword frequency dictionary ...', flush=True)
-        self.idx_freq_dic = defaultdict(int)
-        if not self.args.unique_false:
-            return 0
-
-        with codecs.open(self.ref_vec_path, "r", 'utf-8', errors='replace') as input_data:
-            for i, line in enumerate(input_data):
-
-                if i % int(self.total_line/10) == 0:
-                    print('{} % done'.format(round(i / (self.total_line/100))), flush=True)
-
-                if i == 0:
-                    col = line.strip('\n').split()
-                    vocab_size, dim = int(col[0]), int(col[1])
-                else:
-                    col = line.strip('\n').rsplit(' ', dim)
-                    assert len(col) == dim+1
-
-                    word = col[0]
-                    if word in self.filtering_words or len(word) > 30:
-                        continue
-                    subword_idx = self.get_subword_idx(word, i-1)
-
-                    if len(subword_idx) > self.maxlen:
-                        subword_idx = subword_idx[:self.maxlen]
-                        # pass
-                    if self.separate_kvq:
-                        for index, sub in subword_idx:
-                            self.idx_freq_dic[index] += 1
-                    else:
-                        for index in subword_idx:
-                            self.idx_freq_dic[index] += 1
-
-                if self.test and i > 1000:
-                    break
-
-        print('create subword frequency dictionary ... done', flush=True)
-
     def get_subword_idx(self, word, pos, limit_false=True, unk=False):
-        # index_only = False if self.args.network_type == 3 else True
+
+        '''
+        methods subword_type hashed_idx
+        --------------------------------
+        SUM-F          0        False
+        SUM-H          0        True 
+        KVQ-H          0        True 
+        SUM-FH         4        True 
+        KVQ-FH         4        True 
+        '''
+
         index_only = False if self.separate_kvq else True
         if self.args.hashed_idx:
             if self.args.subword_type == 0:
-            # subword_idx = create_composition_ngram_with_hash(word, index_only=True, bucket_size=self.bucket_size)
-                subword_idx = create_composition_ngram_with_hash(word, self.args.n_max, self.args.n_min, index_only=index_only, multi_hash=self.multi_hash)
-            elif self.args.subword_type == 1:
-                # skip n-gram
-                print('not implemented')
-                exit()
-            elif self.args.subword_type == 2:
-                # TODO: add multi hash
-                subword_idx_ngram = create_composition_ngram_with_hash(word, self.args.n_max, self.args.n_min, index_only=index_only)
-                pos_to_subwordlist = self.pos_to_subwordlist if not unk else self.test_words_pos_to_subwordlist
-                subword_idx_bpe = create_composition_bpe_with_hash(word, pos_to_subwordlist, pos, index_only=index_only)
-                subword_idx = subword_idx_ngram + subword_idx_bpe
-            elif self.args.subword_type == 3:
-                subword_idx = create_composition_bottom_up_with_hash(word, self.bpe_merge_dic, index_only=index_only)
-            elif self.args.subword_type == 4:
-            # subword_idx = create_composition_ngram_with_hash(word, index_only=True, bucket_size=self.bucket_size)
-                subword_idx = create_composition_ngram_with_hash(word, self.args.n_max, self.args.n_min, index_only=index_only, multi_hash=self.multi_hash, ngram_dic=self.ngram_dic)
+                subword_idx = create_composition_ngram_with_hash(word, self.args.n_max, self.args.n_min,\
+                                                             index_only=index_only, multi_hash=self.multi_hash)
+            elif self.args.subword_type == 4: # TODO: use appropriate number
+                subword_idx = create_composition_ngram_with_hash(word, self.args.n_max, self.args.n_min,\
+                                   index_only=index_only, multi_hash=self.multi_hash, ngram_dic=self.ngram_dic)
             else:
-                print('error')
+                print('error 5')
                 exit()
         else:
             if self.args.subword_type == 0:
                 subword_idx = create_composition_ngram(word, self.ngram_dic, self.args.n_max,\
                                                        self.args.n_min, self.limit_size, index_only=index_only)
-            elif self.args.subword_type == 1:
-                subword_idx = create_composition_skip_ngram(word, self.ngram_dic, index_only=True,\
-                                                            limit_size=self.limit_size, ngram_dic_pos=pos-1)
-            elif self.args.subword_type == 2:
-                print('not implemented')
-                exit()
-            elif self.args.subword_type == 3:
-                print('not implemented')
-                exit()
             else:
-                print('error')
+                print('error 6')
                 exit()
         return subword_idx
-
 
     def check_subword_idx(self, subword_idx, unkwords=False):
         new_subword_idx_list = []
         if self.separate_kvq:
             for idx, subword in subword_idx:
-                # if self.idx_freq_dic[idx] == 1:
-                if self.args.unique_false and self.idx_freq_dic[idx] <= 1:
-                    continue
-                else:
-                    if self.args.hashed_idx:
-                        idx = idx % self.args.bucket_size
-                    new_subword_idx_list.append((idx, subword))
+                if self.args.hashed_idx:
+                    idx = idx % self.args.bucket_size
+                new_subword_idx_list.append((idx, subword))
         else:
             for idx in subword_idx:
-                # if self.idx_freq_dic[idx] == 1:
-                if self.args.unique_false and self.idx_freq_dic[idx] <= 1:
-                    continue
-                else:
-                    if self.args.hashed_idx:
-                        idx = idx % self.args.bucket_size
-                    new_subword_idx_list.append(idx)
+                if self.args.hashed_idx:
+                    idx = idx % self.args.bucket_size
+                new_subword_idx_list.append(idx)
         if len(new_subword_idx_list) > self.maxlen:
             # continue
             new_subword_idx_list = new_subword_idx_list[:self.maxlen]
@@ -338,9 +245,6 @@ class DataProcessor(object):
         for line in codecs.open(self.args.test_word_file_path, "r", 'utf-8', errors='replace'):
             word = line.strip()
             test_words.append(word)
-        # :TODO:
-        # bpe must be considerd
-        # 
         test_words = set(test_words)
         for i, word in enumerate(test_words):
             if word not in self.loaded_words_set:
@@ -361,6 +265,8 @@ class DataProcessor(object):
 
         print('[add unknown words] len(dataset) =', len(dataset), flush=True)
         return dataset
+
+
 
 
 

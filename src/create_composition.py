@@ -2,7 +2,7 @@
 import sys, json, os, argparse, codecs
 import numpy as np
 
-def hash( str , prime=0x01000193):
+def hash(str , prime=0x01000193):
     hval = 0x811c9dc5
     # fnv_32_prime = 0x01000193
     fnv_32_prime = prime
@@ -11,18 +11,6 @@ def hash( str , prime=0x01000193):
         hval = hval ^ ord(s)
         hval = (hval * fnv_32_prime) % uint32_max
     return hval
-
-def create_composition_bpe_with_hash(word, pos_to_subwordlist, pos, index_only=False, filter_flag=False):
-    subword_idx =[]
-    subword_list = pos_to_subwordlist[pos]
-    for subword in subword_list:
-        subword = 'BPE-' + subword
-        hashed_idx = hash(subword)
-        if index_only:
-            subword_idx.append(hashed_idx)
-        else:
-            subword_idx.append((hashed_idx, subword))
-    return subword_idx
 
 def create_composition_ngram_with_hash(word, nmax, nmin, index_only=False, bucket_size=1000000, filter_flag=False, multi_hash='', ngram_dic=None):
     ngram_idx =[]
@@ -73,18 +61,6 @@ def create_composition_ngram_with_hash(word, nmax, nmin, index_only=False, bucke
 
     return ngram_idx
 
-def create_composition_skip_ngram(word, ngram_dic, index_only=False, limit_size=0, ngram_dic_pos=0):
-    try:
-        ngram_idx = ngram_dic[ngram_dic_pos]
-    except:
-        try:
-            print('WARNING: word = {}, ngram_dic_pos = {}'.format(word, ngram_dic_pos))
-        except:
-            # print('WARNING: ngram_dic_pos = {}'.format(ngram_dic_pos))
-            pass
-        return []
-    return ngram_idx
-
 def create_composition_ngram(word, ngram_dic, nmax, nmin, limit_size, index_only=False, filter_flag=False):
     ngram_idx =[]
     word = '^' + word + '@'
@@ -110,44 +86,10 @@ def create_composition_ngram(word, ngram_dic, nmax, nmin, limit_size, index_only
                 continue
     return ngram_idx
 
-def load_pos_to_subwordlist(file_path, test=False):
-    print('load pos_to_subwordlist file ...', flush=True)
-    pos_to_subwordlist = {}
-    for i, line in enumerate(codecs.open(file_path, "r", 'utf-8', errors='replace')):
-        subword_list = line.strip().split('\t')
-        pos_to_subwordlist[i] = subword_list
-        if test and i > 10000:
-            break
-    print('load pos_to_subwordlist file ... ... done', flush=True)
-    return pos_to_subwordlist
-
-def load_codecs_skip_ngram(codecs_path, limit_size=1000000, unique=True, codecs_type=0, test=False):
+# def load_codecs(codecs_path, limit_size, unique=True, codecs_type=0):
+def load_codecs(codecs_path, limit_size, unique=False, codecs_type=0):
     print('load codecs file ...', flush=True)
     ngram_dic = {}
-    error_count = 0
-    for i, line in enumerate(open(codecs_path)):
-        col   = line.strip().split('\t')
-        num   = int(col[0])
-        flist1 = [int(i) for i in col[1].split()]
-        flist = [i for i in flist1 if i < limit_size ]        
-        ngram_dic[num] = flist
-        if len(flist) == 0:
-            error_count += 1
-            sys.stderr.write('#ERROR {} | {} {} | {} {} \n'.format(num, len(flist), flist, len(flist1), flist1))
-        else:
-            ##sys.stderr.write('{} | {} {} | {} {} \n'.format(num, len(flist), flist, len(flist1), flist1))
-            pass
-        if test and i > 10000:
-            break
-
-    print('#error count = {}'.format(error_count), flush=True)
-    print('load codecs file ... done', flush=True)
-    return ngram_dic
-
-def load_codecs(codecs_path, limit_size, unique=True, codecs_type=0):
-    print('load codecs file ...', flush=True)
-    ngram_dic = {}
-    # for i, line in enumerate(open(codecs_path)):
     for i, line in enumerate(codecs.open(codecs_path, "r", 'utf-8', errors='replace')):
         col = line.strip().split()
         ngram = col[0]
@@ -157,7 +99,6 @@ def load_codecs(codecs_path, limit_size, unique=True, codecs_type=0):
             continue
         if codecs_type == 2 and len(ngram) > 2:
             continue
-        # ngram_dic[ngram] = i
         ngram_dic[ngram] = len(ngram_dic)
         if len(ngram_dic) == limit_size:
             break
@@ -173,15 +114,8 @@ def main(args):
     print('create_composition')
     # # ngram_idx = create_composition_ngram(word, ngram_dic)
     subword_idx = create_composition_ngram_with_hash(word, 30, 1)
-    # print(ngram_idx)
-    # print('done')
-
-    # pos_to_subwordlist = load_pos_to_subwordlist(args.codecs_path)
-    # ssubword_idx = create_composition_bpe_with_hash(word, pos_to_subwordlist, pos)
     print(subword_idx)
-
     # create_composition_ngram('ultimate', ngram_dic,index_only=False, limit_size=999999)
-    # from IPython.core.debugger import Pdb; Pdb  ().set_trace()
 
 if __name__ == '__main__':
     
