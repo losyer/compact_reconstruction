@@ -42,7 +42,7 @@ $ python src/inference.py \
 --gpu 0 \
 --model_path \
 result/sum/20190625_00_57_18/model_epoch_300\
---oov_word_path oov_words.txt
+--oov_word_path resources/oov_words.txt
 ```
 
 For reconstructing original word embeddings:
