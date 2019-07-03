@@ -12,6 +12,8 @@
 ## Usage
 
 ### Requirements
+- Python version >= 3
+
 - chainer
 - numpy
 - datetime
