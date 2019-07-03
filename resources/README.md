@@ -1,10 +1,10 @@
 # Resources
 
-
+<!-- 
 ## Table of contents
   - [Models](#models)
   - [Setting files for training](#setting-files-for-training)
-
+-->
   
 ## Models
 - Subword embeddings
