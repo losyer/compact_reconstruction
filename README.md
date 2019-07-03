@@ -19,7 +19,8 @@
 ### How to train
 
 ```
-$ src/train.py --gpu 0 \
+$ src/train.py \
+--gpu 0 \
 --ref_vec_path crawl-300d-2M-subword.vec \
 --freq_path freq_count.crawl-300d-2M-subword.vec \
 --multi_hash two \
