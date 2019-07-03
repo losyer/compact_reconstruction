@@ -35,7 +35,7 @@ $ src/train.py \
 --unique_false
 ```
 ||net_type  |subword_type  |hashed_idx  |codecs_path  |freq_path  |
-|---|---|---|---|---|
+|---|---|---|---|---|---|
 |SUM-F  |2  |0  |✘  |comming soon  |comming soon  |
 |SUM-H  |2  |0  |✓  |comming soon  |comming soon  |
 |KVQ-H  |3  |0  |✓  |comming soon  |comming soon  |
