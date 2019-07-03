@@ -36,11 +36,11 @@ $ src/train.py \
 ```
 ||net_type  |subword_type  |hashed_idx  |codecs_path  |freq_path  |
 |---|---|---|---|---|---|
-|SUM-F  |2  |0  |✘  |comming soon  |comming soon  |
-|SUM-H  |2  |0  |✓  |comming soon  |comming soon  |
-|KVQ-H  |3  |0  |✓  |comming soon  |comming soon  |
-|SUM-FH  |2  |4  |✓  |comming soon  |comming soon  |
-|KVQ-FH  |3  |4  |✓  |comming soon  |comming soon  |
+|SUM-F  |2  |0  |✘  |coming soon  |coming soon  |
+|SUM-H  |2  |0  |✓  |coming soon  |coming soon  |
+|KVQ-H  |3  |0  |✓  |coming soon  |coming soon  |
+|SUM-FH  |2  |4  |✓  |coming soon  |coming soon  |
+|KVQ-FH  |3  |4  |✓  |coming soon  |coming soon  |
 
 ### How to estimate (OOV) word vectors
 
