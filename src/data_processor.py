@@ -267,6 +267,33 @@ class DataProcessor(object):
         return dataset
 
 
+    def prepare_data_for_inference(self):
+        print("prepare_data_for_inference ...", flush=True)
+        # self.total_line = get_total_line(path=self.args.oov_word_path, test=self.test)
+        dataset = []
+        with codecs.open(self.args.oov_word_path, "r", 'utf-8', errors='replace') as input_data:
+            for i, line in enumerate(input_data):
+                
+                # if i % int(self.total_line/10) == 0:
+                #     print('{} % done'.format(round(i / (self.total_line/100))), flush=True)
+                word = line.strip()
+                if len(word) > 30:
+                    new_subword_idx = []
+                else:
+                    subword_idx = self.get_subword_idx(word, pos=None)
+                    new_subword_idx = self.check_subword_idx(subword_idx)
+                assert len(new_subword_idx) <= self.maxlen
+
+                ref = [None]
+                ref_vector = np.array(ref, dtype=np.float32)
+                y = np.array(0, dtype=np.int32)
+                freq = self.get_freq(word) if self.args.freq_path!="" else 1
+                freq_array = np.array(freq, dtype=np.float32)
+                dataset = self.set_dataset(dataset, new_subword_idx, ref_vector, freq_array, y)
+
+        print("prepare_data_for_inference ... done", flush=True)
+        print('len(data) =', len(dataset), flush=True)
+        self.oov_data = dataset
 
 
 
