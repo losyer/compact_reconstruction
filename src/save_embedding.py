@@ -245,7 +245,6 @@ if __name__ == '__main__':
 
     # training flag
     parser.add_argument('--test', action='store_true', help='use tiny dataset')
-    parser.add_argument('--raiden', action='store_true', help='')
     parser.add_argument('--unique_false', action='store_false')
     parser.add_argument('--hashed_idx', action='store_true')
 

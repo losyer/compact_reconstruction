@@ -1,6 +1,5 @@
 # coding: utf-8
-import json, sys, argparse, os
-from pytz import timezone
+import json, sys, argparse, os 
 from datetime import datetime
 HOME = os.getenv("HOME")
 os.environ["CHAINER_SEED"] = "1"
@@ -17,65 +16,39 @@ random.seed(0)
 np.random.seed(0)
 chainer.config.cudnn_deterministic = True
 
-# from net import Network, Network_cnn
 from net import Network, Network_sum, Network_cnn_new, Network_sep_kvq
 from data_processor import DataProcessor
 from utils import Args, set_settings, load_settings
 
 def set_result_dest(args):
-    global HOME
-    start_time = datetime.now(timezone('Asia/Tokyo')).strftime('%Y%m%d_%H_%M_%S')
+    start_time = datetime.now().strftime('%Y%m%d_%H_%M_%S')
     if args.test:
         start_time = "test_" + start_time
-    if args.result_dir !='':
-        result_dest = args.result_dir + start_time
+    if args.network_type == 0:
+        type_name = "kvq"
+    elif args.network_type == 1:
+        type_name = "cnn"
+    elif args.network_type == 2:
+        type_name = "sum"
+    elif args.network_type == 3:
+        type_name = "sep_kvq"
     else:
-        if args.network_type == 0:
-            type_name = "kvq"
-        elif args.network_type == 1:
-            type_name = "cnn"
-        elif args.network_type == 2:
-            type_name = "sum"
-        elif args.network_type == 3:
-            type_name = "sep_kvq"
-        else:
-            print('error')
-            exit()
-
-        HOME_ = HOME
-        if args.raiden:
-            HOME_ = HOME + "/sasaki_work"
-        # result_dest = HOME + "/subword_vector/ngram_sq_kvq/result/"+start_time
-        result_dest = HOME_ + "/subword_vector/ngram_sq_kvq/result/"+"{}/".format(type_name)+start_time
+        print('error')
+        exit()
+    result_dest = args.result_dir+f"/{type_name}/"+start_time
     return result_dest
 
 def initial_setup(args):
-    if args.gpu >= 0:
-        cuda.get_device(args.gpu).use()
-        chainer.cuda.cupy.random.seed(0)
-        t = np.array([0], dtype=np.int32)
-        tmp = cuda.to_gpu(t)
-
     # setup result directory
-    for _ in range(100):
-        result_dest = set_result_dest(args)
-        result_abs_dest = os.path.abspath(result_dest)
-        try:
-            os.makedirs(result_dest)
-            print(result_dest)
-            break
-        except:
-            print('Directry name conflict: sleep 3 sec.', flush=True)
-            from time import sleep
-            sleep(3)
-            start_time = datetime.now().strftime('%Y%m%d_%H_%M_%S')
+    result_dest = set_result_dest(args)
+    result_abs_dest = os.path.abspath(result_dest)
+    os.makedirs(result_dest)
+    print("result dest: "+result_dest)
 
+    # dump setting file
     with open(os.path.join(result_abs_dest, "settings.json"), "w") as fo:
         fo.write(json.dumps(vars(args), sort_keys=True, indent=4))
     print(json.dumps(vars(args), sort_keys=True, indent=4), flush=True)
-    with open('/home/sasaki/sasaki_work/subword_vector/ngram_sq_kvq/jobid-to-savepath/'+args.job_id, "w") as fo:
-        fo.write(result_dest+'/')
-    print("result dest: "+result_dest)
     
     return result_dest
 
@@ -89,24 +62,18 @@ def model_setup(args, n_vocab_subword):
     elif args.network_type == 3:
         nn = Network_sep_kvq(args, n_vocab_subword)
     else:
-        prin('error')
+        print('error 1')
         exit()
     if args.load_embedding:
         nn.load_embeddings(args, vocab_subword)
 
     model = L.Classifier(nn, lossfun=F.hinge)
-    
     model.compute_accuracy = False
     if args.gpu >= 0:
         cuda.get_device(args.gpu).use()
         model.to_gpu()
 
-    # optimizer setup
-    if args.op_type == 0:
-        optimizer = O.Adam(alpha=args.lr)
-    elif args.op_type == 1:
-        optimizer = O.SGD(lr=1.0)
-    
+    optimizer = O.Adam(alpha=args.lr)
     optimizer.setup(model)
 
     return model, optimizer
@@ -137,7 +104,7 @@ def main(args):
 
     model_path = '/'.join(args.model_path.split('/')[0:-1])+'/'
     model_epoch = args.model_path.split('/')[-1].split('_')[-1]
-    print('model path = ',model_path)
+    print('model path = ', model_path)
 
     if args.load_snapshot:
         print("loading snapshot...")
@@ -163,7 +130,6 @@ def main(args):
     else:
         trainer.extend(extensions.snapshot(filename='model_epoch_{.updater.epoch}'),
                       trigger=(args.snapshot_interval, 'epoch'))
-
     trainer.run()
 
 if __name__ == '__main__':
@@ -191,13 +157,11 @@ if __name__ == '__main__':
 
     parser.add_argument('--type_id', type=int, default=0, help='')
     parser.add_argument('--codecs_type', type=int, default=0, help='')
-    parser.add_argument('--op_type', type=int, default=0, help='')
     parser.add_argument('--network_type', type=int, default=0, help='')
     parser.add_argument('--subword_type', type=int, default=0, help='')
     parser.add_argument('--z_type', type=int, default=0, help='')
 
     # other flag or id
-    parser.add_argument('--job_id', type=str, default='-1', help='')
     parser.add_argument('--skip_create_dataset', action='store_true', help='')
 
     # model parameter
@@ -217,10 +181,7 @@ if __name__ == '__main__':
     parser.add_argument('--pretrained_subword_vector', type=str)
     parser.add_argument('--filtering_words_path', type=str, default="")
     parser.add_argument('--freq_path', type=str, default="")
-    parser.add_argument('--pos_to_subword_path', type=str, default="")
-    parser.add_argument('--bpe_codecs_path', type=str, default="")
     parser.add_argument('--test_word_file_path', type=str, default="")
-    parser.add_argument('--test_words_pos_to_subword_path', type=str, default="")
     
     args = parser.parse_args()
     main(args)
