@@ -64,10 +64,10 @@ $ python src/save_embedding.py \
 
 ## Resources
 - Subword embeddings
-  - SUM-F comming soon
-  - SUM-H comming soon
-  - KVQ-H comming soon
-  - SUM-FH comming soon
-  - KVQ-FH comming soon
+  - SUM-F coming soon
+  - SUM-H coming soon
+  - KVQ-H coming soon
+  - SUM-FH coming soon
+  - KVQ-FH coming soon
   
 
