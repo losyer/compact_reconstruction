@@ -15,8 +15,8 @@
   - KVQ-FH
   
 ## Setting files for training
-  - SUM-F: codecs ngram-dic
-  - SUM-H: codecs ngram-dic
-  - KVQ-H: codecs ngram-dic
-  - SUM-FH: codecs ngram-dic
-  - KVQ-FH: codecs ngram-dic
+  - SUM-F: settings codecs ngram-dic
+  - SUM-H: settings codecs ngram-dic
+  - KVQ-H: settings codecs ngram-dic
+  - SUM-FH: settings codecs ngram-dic
+  - KVQ-FH: settings codecs ngram-dic
