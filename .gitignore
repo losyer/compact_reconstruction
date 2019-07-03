@@ -1,2 +1,5 @@
 .idea
 .DS_Store
+result/
+qsub_dir/
+

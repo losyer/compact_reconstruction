@@ -19,7 +19,8 @@
 ### How to train
 
 ```
-$ src/train.py --gpu 0 \
+$ src/train.py \
+--gpu 0 \
 --ref_vec_path crawl-300d-2M-subword.vec \
 --freq_path freq_count.crawl-300d-2M-subword.vec \
 --multi_hash two \
@@ -33,8 +34,25 @@ $ src/train.py --gpu 0 \
 --hashed_idx \
 --unique_false
 ```
+||net_type  |subword_type  |hashed_idx  |codecs_path  |
+|---|---|---|---|---|
+|SUM-F  |2  |0  |✘  |comming soon  |
+|SUM-H  |2  |0  |✓  |comming soon  |
+|KVQ-H  |3  |0  |✓  |comming soon  |
+|SUM-FH  |2  |4  |✓  |comming soon  |
+|KVQ-FH  |3  |4  |✓  |comming soon  |
 
 ### How to estimate (OOV) word vectors
+
+For estimating OOV word vectors:
+```
+$ python src/inference.py \
+--gpu 0 \
+--model_path \
+result/sum/20190625_00_57_18/model_epoch_300\
+--oov_word_path resources/oov_words.txt
+```
+
 For reconstructing original word embeddings:
 ```
 $ python src/save_embedding.py \
@@ -46,10 +64,10 @@ $ python src/save_embedding.py \
 
 ## Resources
 - Subword embeddings
-  - SUM-F
-  - SUM-H
-  - KVQ-H
-  - SUM-FH
-  - KVQ-FH
+  - SUM-F comming soon
+  - SUM-H comming soon
+  - KVQ-H comming soon
+  - SUM-FH comming soon
+  - KVQ-FH comming soon
   
 
