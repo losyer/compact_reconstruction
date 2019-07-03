@@ -34,6 +34,13 @@ $ src/train.py \
 --hashed_idx \
 --unique_false
 ```
+||net_type  |subword_type  |hashed_idx  |codecs_path  |
+|---|---|---|---|---|
+|SUM-F  |2  |0  |✘  |comming soon  |
+|SUM-H  |2  |0  |✓  |comming soon  |
+|KVQ-H  |3  |0  |✓  |comming soon  |
+|SUM-FH  |2  |4  |✓  |comming soon  |
+|KVQ-FH  |3  |4  |✓  |comming soon  |
 
 ### How to estimate (OOV) word vectors
 
@@ -57,10 +64,10 @@ $ python src/save_embedding.py \
 
 ## Resources
 - Subword embeddings
-  - SUM-F
-  - SUM-H
-  - KVQ-H
-  - SUM-FH
-  - KVQ-FH
+  - SUM-F comming soon
+  - SUM-H comming soon
+  - KVQ-H comming soon
+  - SUM-FH comming soon
+  - KVQ-FH comming soon
   
 
