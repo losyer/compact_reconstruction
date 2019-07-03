@@ -12,7 +12,7 @@
 ## Usage
 
 ### Requirements
-- Python version >= 3
+- Python version >= 3.7
 
 - chainer
 - numpy
