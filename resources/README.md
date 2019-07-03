@@ -3,7 +3,7 @@
 
 ## Table of contents
   - [Models](#models)
-  - [Setting Files for training](#setting-files-for-training)
+  - [Setting files for training](#setting-files-for-training)
 
   
 ## Models
@@ -14,7 +14,7 @@
   - SUM-FH
   - KVQ-FH
   
-## Setting Files for training
+## Setting files for training
   - SUM-F:  codecs ngram-dic
   - SUM-H:  codecs ngram-dic
   - KVQ-H:  codecs ngram-dic
