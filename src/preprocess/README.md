@@ -8,7 +8,7 @@ you can obtain a word frequency dictionary by using `complement_freq_dic.py`.
 
 
 1. Prepare source word frequency dictionary.
-2. Use `complement_freq_dic.py` like this.
+2. Use `complement_freq_dic.py` like this:
 
 ```
 $ python complement_freq_dic.py \
@@ -19,4 +19,14 @@ $ python complement_freq_dic.py \
 
 
 ## Character N-gram dictionary
-coming soon
+
+### How to make character N-gram dictionary
+```
+$ python make_ngram_dic.py \
+--ref_vec_path [reference_vector_path (word2vec format)]  \
+--output tmp_out \
+--n_max 30 \
+--n_min 3
+
+$ sort -k 2,2 -n -r tmp_out > outfile-min3max30.sorted
+```
