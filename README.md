@@ -50,7 +50,7 @@ For estimating OOV word vectors:
 $ python src/inference.py \
 --gpu 0 \
 --model_path \
-result/sum/20190625_00_57_18/model_epoch_300\
+result/sum/20190625_00_57_18/model_epoch_300 \
 --oov_word_path resources/oov_words.txt
 ```
 
