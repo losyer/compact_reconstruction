@@ -8,7 +8,7 @@ you can obtain a word frequency dictionary by using `complement_freq_dic.py`.
 
 
 1. Prepare source word frequency dictionary.
-2. Use `complement_freq_dic.py` like this.
+2. Use `complement_freq_dic.py` like this:
 
 ```
 $ python complement_freq_dic.py \
