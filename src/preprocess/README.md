@@ -23,7 +23,7 @@ $ python complement_freq_dic.py \
 ### How to make character N-gram dictionary
 ```
 $ python make_ngram_dic.py \
---ref_vec_path [reference_vector_path]  \
+--ref_vec_path [reference_vector_path (word2vec format)]  \
 --output tmp_out \
 --n_max 30 \
 --n_min 3
