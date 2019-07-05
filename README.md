@@ -65,7 +65,6 @@ $ python src/save_embedding.py \
 
 ## Resources
 - Subword embeddings (KVQ-FH)
-  - Reconstructed from fastText.600B
-  - Reconstructed from GloVe.840B
+  - [Reconstructed from fastText.600B/GloVe.840B (300d, H=0.5M)](https://github.com/losyer/compact_reconstruction/releases/tag/20190705)
   
 
