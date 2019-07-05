@@ -64,8 +64,8 @@ $ python src/save_embedding.py \
 
 
 ## Resources
-- Subword embeddings
-  - SUM-FH coming soon
-  - KVQ-FH coming soon
+- Subword embeddings (KVQ-FH)
+  - Reconstructed from fastText.600B
+  - Reconstructed from GloVe.840B
   
 
