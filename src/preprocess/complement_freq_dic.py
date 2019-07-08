@@ -5,7 +5,6 @@ import codecs
 import sys
 
 parser = argparse.ArgumentParser()
-# parser.add_argument('--', action="store_true")
 parser.add_argument('--target_path', type=str)
 parser.add_argument('--org_freq_path', type=str)
 args = parser.parse_args()
@@ -39,6 +38,5 @@ for i, line in enumerate(codecs.open(args.target_path, "r", 'utf-8', errors='rep
     
 
     print('{}\t{}'.format(word, freq))
-
 
 
