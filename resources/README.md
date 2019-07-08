@@ -7,23 +7,11 @@
 -->
   
 ## Models
-- Subword embeddings
-  - SUM-F 
-  - SUM-H
-  - KVQ-H
-  - SUM-FH
-  - KVQ-FH
+- Subword embeddings (KVQ-FH)
+  - [Reconstructed from fastText.600B/GloVe.840B (300d, H=0.5M)](https://github.com/losyer/compact_reconstruction/releases/tag/20190705)
   
-## Setting files for training
-  - SUM-F: settings freq-dic ngram-dic
-  - SUM-H: settings freq-dic ngram-dic
-  - KVQ-H: settings freq-dic ngram-dic
-  - SUM-FH: settings freq-dic ngram-dic
-  - KVQ-FH: settings freq-dic ngram-dic
-
-## Setting files for inference
-  - SUM-F: settings ngram-dic
-  - SUM-H: settings ngram-dic
-  - KVQ-H: settings ngram-dic
-  - SUM-FH: settings ngram-dic
-  - KVQ-FH: settings ngram-dic
+## Setting files
+  - Frequency dictionrary
+    - [for fastText.600B/GloVe.800B](https://github.com/losyer/compact_reconstruction/releases)
+    
+  - [Character N-gram dictionary](https://github.com/losyer/compact_reconstruction/releases)
