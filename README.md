@@ -65,7 +65,7 @@ $ python src/save_embedding.py \
 ```
 
 ## Preprocessing of setting files
-- See [Preprocessing page](https://github.com/losyer/compact_reconstruction/tree/master/src/preprocess)
+- See [preprocessing page](https://github.com/losyer/compact_reconstruction/tree/master/src/preprocess)
 
 ## Resources
 - See [resource page](https://github.com/losyer/compact_reconstruction/tree/master/resources)
