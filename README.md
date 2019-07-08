@@ -6,6 +6,7 @@
     - [Requirements](#requirements)
     - [How to train](#how-to-train)
     - [How to estimate (OOV) word vectors](#how-to-estimate-oov-word-vectors)    
+  - [Preprocessing of setting files](#preprocessing-of-setting-files)
   - [Resources](#resources)
 
 
