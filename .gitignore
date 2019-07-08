@@ -2,4 +2,4 @@
 .DS_Store
 result/
 qsub_dir/
-
+sftp-config.json
