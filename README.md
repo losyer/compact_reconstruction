@@ -62,9 +62,10 @@ $ python src/save_embedding.py \
 --model_path result/sum/20190625_00_57_18/model_epoch_300
 ```
 
+## Preprocessing of setting files
+- See [Preprocessing page](https://github.com/losyer/compact_reconstruction/tree/master/src/preprocess)
 
 ## Resources
-- Subword embeddings (KVQ-FH)
-  - [Reconstructed from fastText.600B/GloVe.840B (300d, H=0.5M)](https://github.com/losyer/compact_reconstruction/releases/tag/20190705)
+- See [resource page](https://github.com/losyer/compact_reconstruction/tree/master/resources)
   
 
