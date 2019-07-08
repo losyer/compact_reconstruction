@@ -52,6 +52,7 @@ $ python src/inference.py \
 --gpu 0 \
 --model_path \
 result/sum/20190625_00_57_18/model_epoch_300 \
+--codecs_path resources/ngram_dic.max30.min3 \
 --oov_word_path resources/oov_words.txt
 ```
 
