@@ -36,13 +36,13 @@ $ src/train.py \
 --hashed_idx \
 --unique_false
 ```
-||net_type  |subword_type  |hashed_idx  |codecs_path  |freq_path  |
-|---|---|---|---|---|---|
-|SUM-F  |2  |0  |✘  |coming soon  |coming soon  |
-|SUM-H  |2  |0  |✓  |coming soon  |coming soon  |
-|KVQ-H  |3  |0  |✓  |coming soon  |coming soon  |
-|SUM-FH  |2  |4  |✓  |coming soon  |coming soon  |
-|KVQ-FH  |3  |4  |✓  |coming soon  |coming soon  |
+||net_type  |subword_type  |hashed_idx  |
+|---|---|---|---|
+|SUM-F  |2  |0  |✘  |
+|SUM-H  |2  |0  |✓  |
+|KVQ-H  |3  |0  |✓  |
+|SUM-FH  |2  |4  |✓  |
+|KVQ-FH  |3  |4  |✓  |
 
 ### How to estimate (OOV) word vectors
 
