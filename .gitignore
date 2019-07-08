@@ -4,3 +4,5 @@ result/
 qsub_dir/
 new-train.sh
 __pycache__/
+sftp-config.json
+
