@@ -1,9 +1,9 @@
 # Preprocess
 
 ## Word frequency dictionary
-In our framework, the system use a word frequency dictionary for the reconstruction training.
+In our framework, the system uses a word frequency dictionary for the reconstruction training.
 
-If you don't have a word frequency dictionary, but only have pretrained word embeddings that is available online (e.g. GloVe.600B vectors),
+If you don't have a word frequency dictionary, but only have pretrained word embeddings that are available online (e.g. GloVe.600B vectors),
 you can obtain a word frequency dictionary by using `complement_freq_dic.py`.
 
 
