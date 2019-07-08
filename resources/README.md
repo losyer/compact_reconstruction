@@ -12,6 +12,6 @@
   
 ## Setting files
   - Frequency dictionrary
-    - [for fastText.600B/GloVe.800B](https://github.com/losyer/compact_reconstruction/releases)
+    - [for fastText.600B/GloVe.800B](https://github.com/losyer/compact_reconstruction/releases/tag/20190708)
     
-  - [Character N-gram dictionary](https://github.com/losyer/compact_reconstruction/releases)
+  - [Character N-gram dictionary](https://github.com/losyer/compact_reconstruction/releases/tag/20190708)
