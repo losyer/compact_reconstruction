@@ -16,7 +16,6 @@
 - Python version >= 3.7
 - chainer
 - numpy
-- datetime
 
 ### How to train
 
