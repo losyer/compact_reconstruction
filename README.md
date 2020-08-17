@@ -35,7 +35,7 @@ $ src/train.py \
 --hashed_idx \
 --unique_false
 ```
-||net_type  |subword_type  |hashed_idx  |
+||network_type  |subword_type  |hashed_idx  |
 |---|---|---|---|
 |SUM-F  |2  |0  |✘  |
 |SUM-H  |2  |0  |✓  |
